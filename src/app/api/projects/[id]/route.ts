@@ -4,7 +4,10 @@ import Project from '@/models/Project';
 import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get('token')?.value;
@@ -13,7 +16,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     const payload = await verifyToken(token);
     if (!payload) return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
 
-    const { id } = await params;
+    const { id } = await context.params;
 
     await connectToDatabase();
     
