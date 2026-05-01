@@ -6,17 +6,17 @@ import { cookies } from 'next/headers';
 
 export async function DELETE(
   req: Request,
-  context: { params: Promise<{ id: string }> }
+  context: { params: { id: string } }
 ) {
   try {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     const token = cookieStore.get('token')?.value;
 
     if (!token) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     const payload = await verifyToken(token);
     if (!payload) return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
 
-    const { id } = await context.params;
+    const id = context.params.id;
 
     await connectToDatabase();
     
@@ -27,7 +27,8 @@ export async function DELETE(
     }
 
     return NextResponse.json({ message: 'Project deleted successfully' });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Something went wrong' }, { status: 500 });
+  } catch (error) {
+    const err = error as Error;
+    return NextResponse.json({ error: err.message || 'Something went wrong' }, { status: 500 });
   }
 }

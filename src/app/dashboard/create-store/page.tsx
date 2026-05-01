@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Store, Loader2, Sparkles, RefreshCcw, CheckCircle2, ChevronRight, Terminal } from "lucide-react";
+import { Store, Loader2, Sparkles, RefreshCcw, CheckCircle2, Terminal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TypingEffect } from "@/components/TypingEffect";
 
@@ -26,7 +26,7 @@ export default function CreateStorePage() {
   });
   
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState("");
   
   const [currentStep, setCurrentStep] = useState(0);
@@ -36,9 +36,6 @@ export default function CreateStorePage() {
     if (!loading) return;
     
     // Simulate generation workflow progress
-    setCurrentStep(0);
-    setProgress(0);
-    
     const totalDuration = 4000; // Fake duration
     const stepDuration = totalDuration / generationSteps.length;
     
@@ -71,6 +68,8 @@ export default function CreateStorePage() {
   const handleGenerate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setLoading(true);
+    setCurrentStep(0);
+    setProgress(0);
     setError("");
     setResult(null);
 
@@ -93,7 +92,7 @@ export default function CreateStorePage() {
         setError(data.error || "Generation failed");
         setLoading(false);
       }
-    } catch (err) {
+    } catch {
       setError("An error occurred. Please try again.");
       setLoading(false);
     }

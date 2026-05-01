@@ -6,7 +6,6 @@ export function TypingEffect({ content }: { content: string }) {
   const [displayedText, setDisplayedText] = useState("");
 
   useEffect(() => {
-    setDisplayedText("");
     let i = 0;
     const intervalId = setInterval(() => {
       setDisplayedText(content.slice(0, i + 1));

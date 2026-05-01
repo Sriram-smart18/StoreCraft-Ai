@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import { PenTool, Loader2, Send, Bot, User, Copy, RefreshCcw, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TypingEffect } from "@/components/TypingEffect";
@@ -11,7 +10,7 @@ import { TypingEffect } from "@/components/TypingEffect";
 type Message = {
   id: string;
   role: "user" | "ai";
-  content: string | any; // AI content might be object initially, we'll format it
+  content: string | Record<string, unknown>; // AI content might be object initially, we'll format it
   isJson?: boolean;
 };
 
@@ -82,7 +81,7 @@ export default function ProductGeneratorPage() {
         };
         setMessages(prev => [...prev, aiMessage]);
       }
-    } catch (err) {
+    } catch {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "ai",
@@ -97,7 +96,7 @@ export default function ProductGeneratorPage() {
 
   const handleRegenerate = () => {
     const lastUserMessage = [...messages].reverse().find(m => m.role === "user");
-    if (lastUserMessage) {
+    if (lastUserMessage && typeof lastUserMessage.content === "string") {
       handleGenerate(lastUserMessage.content);
     }
   };
@@ -150,7 +149,7 @@ export default function ProductGeneratorPage() {
                           </pre>
                         </div>
                       ) : (
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content as string}</p>
                       )}
                     </div>
 

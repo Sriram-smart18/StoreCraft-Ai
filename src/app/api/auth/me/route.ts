@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     const token = cookieStore.get('token')?.value;
 
     if (!token) {
@@ -25,7 +25,8 @@ export async function GET() {
     }
 
     return NextResponse.json({ user });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Something went wrong' }, { status: 500 });
+  } catch (error) {
+    const err = error as Error;
+    return NextResponse.json({ error: err.message || 'Something went wrong' }, { status: 500 });
   }
 }

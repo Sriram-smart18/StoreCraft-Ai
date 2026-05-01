@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 
 export async function POST(req: Request) {
   try {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     const token = cookieStore.get('token')?.value;
 
     if (!token) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     // Artificial delay to simulate AI generation (2.5 seconds)
     await new Promise((resolve) => setTimeout(resolve, 2500));
 
-    let output: any = {};
+    let output: Record<string, unknown> = {};
 
     if (type === 'store') {
       const { brandName, productType, tone } = inputs;
@@ -82,7 +82,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ project });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Something went wrong' }, { status: 500 });
+  } catch (error) {
+    const err = error as Error;
+    return NextResponse.json({ error: err.message || 'Something went wrong' }, { status: 500 });
   }
 }

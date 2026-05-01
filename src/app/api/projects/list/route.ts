@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     const token = cookieStore.get('token')?.value;
 
     if (!token) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -18,7 +18,8 @@ export async function GET() {
     const projects = await Project.find({ userId: payload.userId }).sort({ createdAt: -1 });
 
     return NextResponse.json({ projects });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Something went wrong' }, { status: 500 });
+  } catch (error) {
+    const err = error as Error;
+    return NextResponse.json({ error: err.message || 'Something went wrong' }, { status: 500 });
   }
 }

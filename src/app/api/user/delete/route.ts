@@ -7,7 +7,7 @@ import { cookies } from 'next/headers';
 
 export async function DELETE() {
   try {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     const token = cookieStore.get('token')?.value;
 
     if (!token) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -22,7 +22,8 @@ export async function DELETE() {
     const response = NextResponse.json({ message: 'Account deleted successfully' });
     response.cookies.delete('token');
     return response;
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Something went wrong' }, { status: 500 });
+  } catch (error) {
+    const err = error as Error;
+    return NextResponse.json({ error: err.message || 'Something went wrong' }, { status: 500 });
   }
 }

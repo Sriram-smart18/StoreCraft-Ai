@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Switch } from "@/components/ui/switch";
 
 export default function PricingPage() {
   const [showModal, setShowModal] = useState(false);

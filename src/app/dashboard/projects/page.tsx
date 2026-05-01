@@ -7,8 +7,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 
+type Project = {
+  _id: string;
+  type: string;
+  name: string;
+  createdAt: string;
+  output?: { 
+    heroCopy?: { headline?: string }; 
+    shortDescription?: string; 
+    [key: string]: unknown; 
+  };
+};
+
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<any[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   
@@ -16,22 +28,21 @@ export default function ProjectsPage() {
   const [exportingId, setExportingId] = useState<string | null>(null);
   const [exportProgress, setExportProgress] = useState(0);
 
-  const fetchProjects = async () => {
-    try {
-      const res = await fetch("/api/projects/list");
-      if (res.ok) {
-        const data = await res.json();
-        setProjects(data.projects);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchProjects();
+    const loadData = async () => {
+      try {
+        const res = await fetch("/api/projects/list");
+        if (res.ok) {
+          const data = await res.json();
+          setProjects(data.projects);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
   }, []);
 
   const handleDelete = async (id: string) => {
@@ -109,7 +120,7 @@ export default function ProjectsPage() {
               <FolderOpen className="h-10 w-10 text-muted-foreground" />
             </div>
             <h3 className="text-xl font-semibold text-white mb-2">No projects found</h3>
-            <p className="max-w-sm">You haven't generated any projects yet or none match your search criteria.</p>
+            <p className="max-w-sm">You haven&apos;t generated any projects yet or none match your search criteria.</p>
             <div className="mt-8 flex gap-4">
               <Button asChild className="bg-primary hover:bg-primary/90 text-white">
                 <a href="/dashboard/create-store">Create Store</a>
